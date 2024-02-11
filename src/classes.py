@@ -6,16 +6,16 @@ from config import *
 
 class APIServices(ABC):
     @abstractmethod
-    def get_vacancies(self, vacancie_name):
+    def get_vacancies(self, vacancy_name):
         pass
 
 
 class HeadHunterAPI(APIServices):
-    def get_vacancies(self, vacancie_name):
+    def get_vacancies(self, vacancy_name):
         params = {
-            'text': vacancie_name,  # Текст фильтра. В имени должно быть слово "Аналитик"
-            'area': 113,  # Поиск ощуществляется по вакансиям города Москва
-            'per_page': 100  # Кол-во вакансий на 1 странице
+            'text': vacancy_name,
+            'area': 113,
+            'per_page': 100
         }
         req = requests.get('https://api.hh.ru/vacancies', params)
         data = req.content.decode()
@@ -33,6 +33,8 @@ class Vacancy:
         self.area = area
         self.requirement = requirement
         self.currency = currency
+        if self.requirement is None:
+            self.requirement = ''
 
     def __str__(self):
         if self.min_pay == 0 and self.max_pay == 0:
@@ -73,10 +75,35 @@ class Vacancy:
                         item['salary']['from'], item['salary']['to'], item['salary']['currency']))
         return vacancies_list
 
+    @staticmethod
+    def filter_vacancies(vacancies_list, filter_words):
+        filtered_vacancies = []
+        formated_filter_words = Vacancy.get_format_list(filter_words)
+        for vacancy in vacancies_list:
+            vacancy_words = f'{vacancy.area.lower()} {vacancy.name.lower()} {vacancy.requirement.lower()}'
+            formated_vacancies_list = Vacancy.get_format_list(vacancy_words)
+            if set(formated_filter_words).issubset(formated_vacancies_list):
+                filtered_vacancies.append(vacancy)
+        return filtered_vacancies
+
+    @staticmethod
+    def get_format_list(data_to_format):
+        alpha_str = ''
+        for symbol in data_to_format:
+            if symbol.isalpha() or symbol == ' ':
+                alpha_str += symbol
+            else:
+                alpha_str += ' '
+        alpha_list = alpha_str.split(' ')
+        result_list = []
+        for word in alpha_list:
+            if word != '':
+                result_list.append(word)
+        return result_list
+
 
 class Saver(ABC):
-    @staticmethod
-    def add_vacancy(data):
+    def add_vacancy(self, data):
         pass
 
     def delete_vacancy(self, data):
@@ -84,16 +111,21 @@ class Saver(ABC):
 
 
 class JSONSaver(Saver):
-    @staticmethod
-    def add_vacancy(data):
-        vacancy_dict = {}
-        with open(VACANCY_JSON, 'w', encoding='UTF-8') as file:
-            for item in data:
-                vacancy_dict['name'] = item.name
-                vacancy_dict['url'] = item.url
-                vacancy_dict['area'] = item.area
-                vacancy_dict['requirement'] = item.requirement
-                vacancy_dict['min_pay'] = item.min_pay
-                vacancy_dict['max_pay'] = item.max_pay
-                vacancy_dict['currency'] = item.currency
-                json.dump(vacancy_dict, file, indent=1)
+    def add_vacancy(self, data):
+        vacancies_list_for_json = []
+        for item in data:
+            vacancy_dict = {}
+            vacancy_dict['name'] = item.name
+            vacancy_dict['url'] = item.url
+            vacancy_dict['area'] = item.area
+            vacancy_dict['requirement'] = item.requirement
+            vacancy_dict['min_pay'] = item.min_pay
+            vacancy_dict['max_pay'] = item.max_pay
+            vacancy_dict['currency'] = item.currency
+            vacancies_list_for_json.append(vacancy_dict)
+
+        with open(VACANCY_JSON, 'w') as file:
+            json.dump(vacancies_list_for_json, file, indent=4, ensure_ascii=False)
+
+    def delete_vacancy(self, data):
+        pass
