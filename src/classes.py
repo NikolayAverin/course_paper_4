@@ -35,13 +35,17 @@ class Vacancy:
         self.currency = currency
         if self.requirement is None:
             self.requirement = ''
+        if self.min_pay is None:
+            self.min_pay = 0
+        if self.max_pay is None:
+            self.max_pay = 0
 
     def __str__(self):
         if self.min_pay == 0 and self.max_pay == 0:
             return f'{self.name}, зарплата не указана, в {self.area}'
-        elif self.min_pay is None:
+        elif self.min_pay == 0:
             return f'{self.name}, зарплата до {self.max_pay} {self.currency}, в {self.area}'
-        elif self.max_pay is None:
+        elif self.max_pay == 0:
             return f'{self.name}, зарплата от {self.min_pay} {self.currency}, в {self.area}'
         else:
             return f'{self.name}, зарплата: {self.min_pay} - {self.max_pay} {self.currency}, в {self.area}'
@@ -49,20 +53,24 @@ class Vacancy:
     def __repr__(self):
         if self.min_pay == 0 and self.max_pay == 0:
             return f'{self.name}, зарплата не указана, в {self.area}'
-        elif self.min_pay is None:
+        elif self.min_pay == 0:
             return f'{self.name}, зарплата до {self.max_pay} {self.currency}, в {self.area}'
-        elif self.max_pay is None:
+        elif self.max_pay == 0:
             return f'{self.name}, зарплата от {self.min_pay} {self.currency}, в {self.area}'
         else:
             return f'{self.name}, зарплата: {self.min_pay} - {self.max_pay} {self.currency}, в {self.area}'
 
-    def __le__(self, other):
-        result = self.min_pay <= other.min_pay
+    # def __le__(self, other):
+    #     result = self.min_pay <= other.min_pay
+    #     return result
+
+    def __lt__(self, other):
+        result = self.max_pay < other.max_pay
         return result
 
-    def __ge__(self, other):
-        result = self.max_pay >= other.max_pay
-        return result
+    # def __ge__(self, other):
+    #     result = self.max_pay >= other.max_pay
+    #     return result
 
     @staticmethod
     def cast_to_object_list(data):
@@ -76,7 +84,7 @@ class Vacancy:
         return vacancies_list
 
     @staticmethod
-    def filter_vacancies(vacancies_list, filter_words):
+    def filter_keyword_vacancies(vacancies_list, filter_words):
         filtered_vacancies = []
         formated_filter_words = Vacancy.get_format_list(filter_words)
         for vacancy in vacancies_list:
@@ -100,6 +108,22 @@ class Vacancy:
             if word != '':
                 result_list.append(word)
         return result_list
+
+    @staticmethod
+    def filter_min_salary(filtered_vacancies, min_salary):
+        filtered_min_salary_vacancies = []
+        for vacancy in filtered_vacancies:
+            if vacancy.min_pay >= min_salary:
+                filtered_min_salary_vacancies.append(vacancy)
+        return filtered_min_salary_vacancies
+
+    @staticmethod
+    def filter_max_salary(filtered_vacancies, max_salary):
+        filtered_max_salary_vacancies = []
+        for vacancy in filtered_vacancies:
+            if vacancy.max_pay <= max_salary:
+                filtered_max_salary_vacancies.append(vacancy)
+        return filtered_max_salary_vacancies
 
 
 class Saver(ABC):
