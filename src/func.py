@@ -10,7 +10,7 @@ def user_interaction():
     filtered_min_salary_vacancies = get_min_salary_vacancies(filtered_vacancies)
     filtered_max_salary_vacancies = get_max_salary_vacancies(filtered_min_salary_vacancies)
     top_n = sorted_by_max_salary(filtered_max_salary_vacancies)
-    print(top_n)
+    save_to_file(top_n)
 
 
 def keyword_processing(vacancies_list):
@@ -83,7 +83,7 @@ def get_max_salary_vacancies(filter_min_salary_vacancies):
 
 def sorted_by_max_salary(filter_max_salary_vacancies):
     print("Отсортировать вакансии по максимальной зарплате?")
-    user_answer = input("Да/нет: ")
+    user_answer = input("Да/Нет: ")
     while True:
         try:
             if user_answer.lower().strip() == 'да':
@@ -115,9 +115,24 @@ def sorted_by_max_salary(filter_max_salary_vacancies):
             continue
 
 
-
-
-
-
-
-user_interaction()
+def save_to_file(top_n):
+    print("Выберите в каком формате сохранить данные, так же они будут выведены в терминал"
+          "Доступно JSON, CSV(результат можно открыть в Excel), TXT. 0 для отображения только в терминале.")
+    user_answer = input("Ваш выбор: ").lower().strip()
+    if user_answer == '0':
+        print(top_n)
+    elif user_answer == 'json':
+        json_saver = JSONSaver()
+        json_saver.add_vacancy(top_n)
+        print(top_n)
+    elif user_answer == 'csv':
+        csv_saver = CSVSaver()
+        csv_saver.add_vacancy(top_n)
+        print(top_n)
+    elif user_answer == 'txt':
+        txt_saver = TXTSaver()
+        txt_saver.add_vacancy(top_n)
+        print(top_n)
+    else:
+        print("Не знаю такой формат, просто покажу вам результаты в терминале.")
+        print(top_n)
