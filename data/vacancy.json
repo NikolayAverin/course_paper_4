@@ -1,0 +1,56 @@
+[
+    {
+        "name": "Python-разработчик (Junior)",
+        "url": "https://api.hh.ru/vacancies/92892555?host=hh.ru",
+        "area": "Санкт-Петербург",
+        "requirement": "1. Собственная система сквозной аналитики. 1. Хорошее знание <highlighttext>Python</highlighttext> 3, Pandas, SQL, Git, Docker, Docker-compose, AirFlow, Flask, FastAPI, SQLAlchemy...",
+        "min_pay": 80000,
+        "max_pay": 80000,
+        "currency": "RUR"
+    },
+    {
+        "name": "Младший разработчик",
+        "url": "https://api.hh.ru/vacancies/92778836?host=hh.ru",
+        "area": "Санкт-Петербург",
+        "requirement": "Базовые навыки программирования на любом распространенном языке высокого уровня (<highlighttext>Python</highlighttext>, Ruby, Java, JS и т.д.). Навыки работы с консолью...",
+        "min_pay": 0,
+        "max_pay": 0,
+        "currency": ""
+    },
+    {
+        "name": "Junior-разработчик",
+        "url": "https://api.hh.ru/vacancies/92961834?host=hh.ru",
+        "area": "Санкт-Петербург",
+        "requirement": "Ты знаешь инструменты для обработки и анализа данных, такие как Microsoft Excel, SQL, <highlighttext>Python</highlighttext> или R; умеешь работать с системами...",
+        "min_pay": 60000,
+        "max_pay": null,
+        "currency": "RUR"
+    },
+    {
+        "name": "Python разработчик (Django)",
+        "url": "https://api.hh.ru/vacancies/91636601?host=hh.ru",
+        "area": "Санкт-Петербург",
+        "requirement": "Знания: <highlighttext>Python</highlighttext>, Django, MYSQL, PostgreSQL, Celery. Приветствуется: JS, HTML, CSS, Steam API, API PUBG. Как минимум 50% вашего рабочего времени...",
+        "min_pay": 60000,
+        "max_pay": 100000,
+        "currency": "RUR"
+    },
+    {
+        "name": "Java-разработчик",
+        "url": "https://api.hh.ru/vacancies/92762241?host=hh.ru",
+        "area": "Санкт-Петербург",
+        "requirement": "Умение красиво решать нестандартные задачи. Математический склад ума. Умение работать в команде. Внимательное отношение к своему и чужому коду. ",
+        "min_pay": 60000,
+        "max_pay": 110000,
+        "currency": "RUR"
+    },
+    {
+        "name": "Python backend разработчик",
+        "url": "https://api.hh.ru/vacancies/92313314?host=hh.ru",
+        "area": "Санкт-Петербург",
+        "requirement": "В backend команду Everypixel ищем <highlighttext>python</highlighttext>-разработчика с опытом 2+ года. - Опыт на аналогичной должности от 2-х лет. - ",
+        "min_pay": 0,
+        "max_pay": 0,
+        "currency": ""
+    }
+]
