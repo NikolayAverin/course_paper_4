@@ -1,30 +1,3 @@
-import requests
-import json
-import csv
-from abc import ABC, abstractmethod
-from config import *
-
-
-class APIServices(ABC):
-    @abstractmethod
-    def get_vacancies(self, vacancy_name):
-        pass
-
-
-class HeadHunterAPI(APIServices):
-    def get_vacancies(self, vacancy_name):
-        params = {
-            'text': vacancy_name,
-            'area': 113,
-            'per_page': 100
-        }
-        req = requests.get('https://api.hh.ru/vacancies', params)
-        data = req.content.decode()
-        req.close()
-        json_data = json.loads(data)
-        return json_data
-
-
 class Vacancy:
     def __init__(self, name, url, area, requirement, min_pay, max_pay, currency):
         self.name = name
@@ -63,20 +36,13 @@ class Vacancy:
             return (f'{self.name}, зарплата: {self.min_pay} - {self.max_pay} {self.currency}, в {self.area}, '
                     f'ссылка {self.url}')
 
-    # def __le__(self, other):
-    #     result = self.min_pay <= other.min_pay
-    #     return result
-
     def __lt__(self, other):
         result = self.max_pay < other.max_pay
         return result
 
-    # def __ge__(self, other):
-    #     result = self.max_pay >= other.max_pay
-    #     return result
-
     @staticmethod
     def cast_to_object_list(data):
+        """Метод, создающий список экземпляров класса из переданного списка вакансий"""
         vacancies_list = []
         for item in data['items']:
             if item['salary'] is None:
@@ -88,6 +54,7 @@ class Vacancy:
 
     @staticmethod
     def filter_keyword_vacancies(vacancies_list, filter_words):
+        """Метод, возвращающий отсортированный по ключевым словам список экземпляров класса"""
         filtered_vacancies = []
         formated_filter_words = Vacancy.get_format_list(filter_words)
         for vacancy in vacancies_list:
@@ -99,6 +66,7 @@ class Vacancy:
 
     @staticmethod
     def get_format_list(data_to_format):
+        """Метод, возвращающий входящие данные в формате, подходящем для фильтрации"""
         alpha_str = ''
         for symbol in data_to_format:
             if symbol.isalpha() or symbol == ' ':
@@ -114,6 +82,7 @@ class Vacancy:
 
     @staticmethod
     def filter_min_salary(filtered_vacancies, min_salary):
+        """Метод, возвращающий экземпляры класса, отфильтрованные по минимальной зарплате"""
         filtered_min_salary_vacancies = []
         for vacancy in filtered_vacancies:
             if vacancy.min_pay >= min_salary:
@@ -122,74 +91,9 @@ class Vacancy:
 
     @staticmethod
     def filter_max_salary(filtered_vacancies, max_salary):
+        """Метод, возвращающий экземпляры класса, отфильтрованные по максимальной зарплате"""
         filtered_max_salary_vacancies = []
         for vacancy in filtered_vacancies:
             if vacancy.max_pay <= max_salary:
                 filtered_max_salary_vacancies.append(vacancy)
         return filtered_max_salary_vacancies
-
-
-class Saver(ABC):
-    def add_vacancy(self, data):
-        pass
-
-    def delete_vacancy(self, data):
-        pass
-
-
-class JSONSaver(Saver):
-    def add_vacancy(self, data):
-        vacancies_list_for_json = []
-        for item in data:
-            vacancy_dict = {}
-            vacancy_dict['name'] = item.name
-            vacancy_dict['area'] = item.area
-            vacancy_dict['requirement'] = item.requirement
-            vacancy_dict['min_pay'] = item.min_pay
-            vacancy_dict['max_pay'] = item.max_pay
-            vacancy_dict['currency'] = item.currency
-            vacancy_dict['url'] = item.url
-            vacancies_list_for_json.append(vacancy_dict)
-
-        with open(VACANCY_JSON, 'w') as file:
-            json.dump(vacancies_list_for_json, file, indent=4, ensure_ascii=False)
-
-    def delete_vacancy(self, data):
-        pass
-
-
-class CSVSaver(Saver):
-    def add_vacancy(self, data):
-        vacancies_list_for_csv = []
-        for item in data:
-            vacancy_dict = {}
-            vacancy_dict['name'] = item.name
-            vacancy_dict['area'] = item.area
-            vacancy_dict['requirement'] = item.requirement
-            vacancy_dict['min_pay'] = item.min_pay
-            vacancy_dict['max_pay'] = item.max_pay
-            vacancy_dict['currency'] = item.currency
-            vacancy_dict['url'] = item.url
-            vacancies_list_for_csv.append(vacancy_dict)
-
-        with open(VACANCY_CSV, 'w', newline='') as file:
-            fc = csv.DictWriter(file, fieldnames=vacancies_list_for_csv[0].keys())
-            fc.writeheader()
-            fc.writerows(vacancies_list_for_csv)
-
-    def delete_vacancy(self, data):
-        pass
-
-
-class TXTSaver(Saver):
-    def add_vacancy(self, data):
-        vacancies_list_for_txt = []
-        for item in data:
-            vacancies_list_for_txt.append(item)
-
-        with open(VACANCY_TXT, 'w', encoding='UTF-8') as file:
-            for vacancy in vacancies_list_for_txt:
-                file.write(f'{str(vacancy)}\n')
-
-    def delete_vacancy(self, data):
-        pass

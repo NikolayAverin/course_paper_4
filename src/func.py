@@ -1,7 +1,10 @@
-from src.classes import *
+from src.api_services_classes import *
+from src.vacansy_class import *
+from src.saver_classes import *
 
 
 def user_interaction():
+    """Основная фунцкия для работы с пользователем"""
     hh_api = HeadHunterAPI()
     search_query = input("Введите запрос для поиска: ")
     hh_vacancies = hh_api.get_vacancies(search_query)
@@ -14,6 +17,7 @@ def user_interaction():
 
 
 def keyword_processing(vacancies_list):
+    """Функция, фильтрующая список вакансий по ключевым словам"""
     while True:
         filter_words = input("Введите ключевые слова для фильтрации вакансий: ").lower().split(' ')
         filtered_vacancies = Vacancy.filter_keyword_vacancies(vacancies_list, filter_words)
@@ -33,6 +37,7 @@ def keyword_processing(vacancies_list):
 
 
 def get_min_salary_vacancies(filtered_vacancies):
+    """Функция, фильтрующая список вакансий по минимальной зарплате"""
     while True:
         try:
             min_salary = int(input("Введите значение минимальной зарплаты ('0' если не важно): "))
@@ -56,6 +61,7 @@ def get_min_salary_vacancies(filtered_vacancies):
 
 
 def get_max_salary_vacancies(filter_min_salary_vacancies):
+    """Функция, фильтрующая список вакансий по максимальной зарплате"""
     while True:
         try:
             max_salary = int(input("Введите значение максимальной зарплаты ('0' если не важно): "))
@@ -82,6 +88,7 @@ def get_max_salary_vacancies(filter_min_salary_vacancies):
 
 
 def sorted_by_max_salary(filter_max_salary_vacancies):
+    """Функция, предлагающая отсортировать вакансии по максимальной зарплате и вывести определенное количество"""
     print("Отсортировать вакансии по максимальной зарплате?")
     user_answer = input("Да/Нет: ")
     while True:
@@ -116,6 +123,7 @@ def sorted_by_max_salary(filter_max_salary_vacancies):
 
 
 def save_to_file(top_n):
+    """Функция, сохраняющая список вакансий в файлы различных форматов"""
     print("Выберите в каком формате сохранить данные, так же они будут выведены в терминал"
           "Доступно JSON, CSV(результат можно открыть в Excel), TXT. 0 для отображения только в терминале.")
     user_answer = input("Ваш выбор: ").lower().strip()
